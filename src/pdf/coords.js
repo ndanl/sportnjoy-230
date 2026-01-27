@@ -3,8 +3,8 @@
 export const COORD = {
   // --- I. Date contribuabil ---
   // Mutate un rând mai jos (≈ 18pt)
-  nume:        { x: 75,  y: 682, size: 10 }, // 695 -> 677
-  prenume:     { x: 75,  y: 660, size: 10 }, // 667 -> 649
+  nume:        { x: 70,  y: 682, size: 10 }, // 695 -> 677
+  prenume:     { x: 70,  y: 660, size: 10 }, // 667 -> 649
   initialaTata:{ x: 300, y: 682, size: 10 }, // 695 -> 677
 
   // CNP în căsuțe — mutat o căsuță mai la stânga (x - step)
