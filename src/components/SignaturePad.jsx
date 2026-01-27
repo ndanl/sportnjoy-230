@@ -43,6 +43,7 @@ export default function SignaturePad({ onChange }) {
     e.preventDefault();
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+
     const p = getPos(e);
     const last = lastRef.current;
 
@@ -52,6 +53,8 @@ export default function SignaturePad({ onChange }) {
     ctx.stroke();
 
     lastRef.current = p;
+
+    // Emit latest image to parent
     onChange?.(canvas.toDataURL("image/png"));
   };
 
@@ -88,6 +91,7 @@ export default function SignaturePad({ onChange }) {
         onTouchMove={move}
         onTouchEnd={end}
       />
+
       <div style={{ marginTop: 10 }}>
         <button className="btn btn-secondary" type="button" onClick={clear}>
           Șterge semnătura
@@ -96,4 +100,3 @@ export default function SignaturePad({ onChange }) {
     </div>
   );
 }
-
