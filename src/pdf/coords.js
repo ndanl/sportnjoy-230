@@ -18,8 +18,8 @@ export const COORD = {
   },
 
   // E-mail / Telefon
-  email:   { x: 365.0, y: 649.4, size: 10 },
-  telefon: { x: 365.0, y: 622.4, size: 10 },
+  email:   { x: 365, y: 649.4, size: 10 },
+  telefon: { x: 365, y: 622.4, size: 10 },
 
   // Stradă + Număr
   strada: { x: 64.6,  y: 638.4, size: 10, maxWidth: 180 },
