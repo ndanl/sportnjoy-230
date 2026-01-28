@@ -158,33 +158,35 @@ export default function App() {
         </div>
       </div>
 
-      <div className="card">
-        <div style={{ fontWeight: 700 }}>Distribuire</div>
+<div className="card">
+  <div style={{ fontWeight: 700 }}>Distribuire</div>
 
-        <label style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 8 }}>
-          <input
-            type="radio"
-            name="aniDistribuire"
-            checked={Number(form.aniDistribuire) === 1}
-            onChange={() => setForm((p) => ({ ...p, aniDistribuire: 1 }))}
-          />
-          1 an
-        </label>
+  <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 10 }}>
+    <div style={{ fontSize: 14 }}>Semnez pentru:</div>
 
-        <label style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 6 }}>
-          <input
-            type="radio"
-            name="aniDistribuire"
-            checked={Number(form.aniDistribuire) === 2}
-            onChange={() => setForm((p) => ({ ...p, aniDistribuire: 2 }))}
-          />
-          2 ani (bifează opțiunea “pentru o perioadă de 2 ani”)
-        </label>
+    <select
+      value={Number(form.aniDistribuire)}
+      onChange={(e) => setForm((p) => ({ ...p, aniDistribuire: Number(e.target.value) }))}
+      style={{
+        padding: "10px 12px",
+        borderRadius: 10,
+        border: "1px solid #d7dbe0",
+        fontSize: 16,
+        background: "#fff",
+      }}
+    >
+      <option value={1}>1 an</option>
+      <option value={2}>2 ani</option>
+    </select>
 
-        <div className="small" style={{ marginTop: 8 }}>
-          Indiferent de selecție, pagina 2 se completează cu CNP + semnătură.
-        </div>
-      </div>
+    <div className="small" style={{ marginLeft: "auto" }}>
+      {Number(form.aniDistribuire) === 2
+        ? "Se bifează opțiunea 2 ani."
+        : "Nu se bifează opțiunea 2 ani."}
+    </div>
+  </div>
+</div>
+
 
       <div className="card">
         <div style={{ fontWeight: 700 }}>Semnătură</div>
