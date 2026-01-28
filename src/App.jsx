@@ -30,6 +30,7 @@ export default function App() {
     codPostal: "",
     email: "",
     telefon: "",
+    aniDistribuire: 1, // 1 sau 2
   });
 
   const [sig, setSig] = useState("");
@@ -38,7 +39,11 @@ export default function App() {
   const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
 
   const filename = useMemo(() => {
-    const safe = (s) => (s || "").trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_-]/g, "");
+    const safe = (s) =>
+      (s || "")
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_-]/g, "");
     return `Formular_230_${safe(form.nume) || "Nume"}_${safe(form.prenume) || "Prenume"}.pdf`;
   }, [form.nume, form.prenume]);
 
@@ -60,6 +65,7 @@ export default function App() {
         <div style={{ fontWeight: 800, fontSize: 18 }}>sportnjoy-230 — Formular 230</div>
         <div className="small">
           Completezi datele tale, semnezi pe ecran și descarci PDF-ul completat (local, în browser).
+          Pagina 2 se completează mereu cu CNP + semnătură.
         </div>
       </div>
 
@@ -84,7 +90,12 @@ export default function App() {
           </div>
           <div>
             <label>CNP / NIF</label>
-            <input value={form.cnp} onChange={set("cnp")} inputMode="numeric" placeholder="13 cifre pentru CNP" />
+            <input
+              value={form.cnp}
+              onChange={set("cnp")}
+              inputMode="numeric"
+              placeholder="13 cifre pentru CNP"
+            />
           </div>
         </div>
 
@@ -148,6 +159,34 @@ export default function App() {
       </div>
 
       <div className="card">
+        <div style={{ fontWeight: 700 }}>Distribuire</div>
+
+        <label style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 8 }}>
+          <input
+            type="radio"
+            name="aniDistribuire"
+            checked={Number(form.aniDistribuire) === 1}
+            onChange={() => setForm((p) => ({ ...p, aniDistribuire: 1 }))}
+          />
+          1 an
+        </label>
+
+        <label style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 6 }}>
+          <input
+            type="radio"
+            name="aniDistribuire"
+            checked={Number(form.aniDistribuire) === 2}
+            onChange={() => setForm((p) => ({ ...p, aniDistribuire: 2 }))}
+          />
+          2 ani (bifează opțiunea “pentru o perioadă de 2 ani”)
+        </label>
+
+        <div className="small" style={{ marginTop: 8 }}>
+          Indiferent de selecție, pagina 2 se completează cu CNP + semnătură.
+        </div>
+      </div>
+
+      <div className="card">
         <div style={{ fontWeight: 700 }}>Semnătură</div>
         <SignaturePad onChange={setSig} />
 
@@ -156,10 +195,6 @@ export default function App() {
             Generează PDF & descarcă
           </button>
           <div className="small" style={{ marginTop: 8 }}>{status}</div>
-        </div>
-
-        <div className="small" style={{ marginTop: 10 }}>
-          Dacă textul nu cade fix pe căsuțe, ajustăm coordonatele în <code>src/pdf/coords.js</code>.
         </div>
       </div>
     </div>

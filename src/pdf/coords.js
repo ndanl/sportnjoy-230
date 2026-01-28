@@ -1,15 +1,16 @@
-// Coordonate calibrate pe template-ul Formular 230 (2025)
+// Coordonate Formular 230 (2025)
+// P1: calibrate (înlocuiește dacă ai alte valori finale)
+// P2: placeholder (calibrăm după primul PDF generat)
 
 export const COORD = {
-  // --- I. Date contribuabil ---
-  // Mutate un rând mai jos (≈ 18pt)
-  nume:        { x: 70,  y: 682, size: 10 }, // 695 -> 677
-  prenume:     { x: 70,  y: 660, size: 10 }, // 667 -> 649
-  initialaTata:{ x: 300, y: 682, size: 10 }, // 695 -> 677
+  // ===== Pagina 1 =====
+  nume:        { x: 70,  y: 682, size: 10 },
+  prenume:     { x: 70,  y: 660, size: 10 },
+  initialaTata:{ x: 300, y: 682, size: 10 },
 
-  // CNP în căsuțe — mutat o căsuță mai la stânga (x - step)
+  // CNP P1
   cnpBoxes: {
-    x: 330.4993,   // 348.98 - 18.4807
+    x: 330.4993,
     y: 674.65,
     step: 18.4807,
     size: 10,
@@ -17,25 +18,41 @@ export const COORD = {
     dy: 0,
   },
 
-  // E-mail / Telefon
   email:   { x: 365, y: 649.4, size: 10 },
   telefon: { x: 365, y: 622.4, size: 10 },
 
-  // Stradă + Număr
-  strada: { x: 64.6,  y: 638.4, size: 10, maxWidth: 180 },
-  numar:  { x: 288.8, y: 638.4, size: 10 },
+  strada: { x: 64,  y: 638.4, size: 10, maxWidth: 180 },
+  numar:  { x: 288, y: 638.4, size: 10 },
 
-  // Bloc / Scară / Etaj / Ap. + Județ/Sector
   bloc:        { x: 47.6,  y: 615.4, size: 10 },
   scara:       { x: 107.8, y: 615.4, size: 10 },
   etaj:        { x: 147.6, y: 615.4, size: 10 },
-  ap:          { x: 185, y: 615.4, size: 10 }, // 172.2 -> 192.2 (≈ +20pt)
+  ap:          { x: 185, y: 615.4, size: 10 },
   judetSector: { x: 255.4, y: 615.4, size: 10, maxWidth: 70 },
 
-  // Localitate + Cod poștal
   oras:      { x: 68.3,  y: 593.4, size: 10, maxWidth: 150 },
   codPostal: { x: 264.1, y: 593.4, size: 10 },
 
-  // Semnătură
-  semnatura: { x: 90, y: 125, w: 190, h: 45 },
+  // Checkbox “2 ani” pagina 1 (placeholder; ajustăm)
+  opt2ani_p1: { x: 325, y: 429, size: 12 },
+
+  // Semnătură pagina 1
+  semnatura: { x: 120, y: 125, w: 190, h: 45 },
+
+  // ===== Pagina 2 (placeholder) =====
+  // Checkbox “2 ani” pagina 2
+  opt2ani_p2: { x: 330, y: 445, size: 12 },
+
+  // CNP pagina 2 (câte 13 căsuțe)
+  cnpBoxes_p2: {
+    x: 350,
+    y: 674,
+    step: 17,
+    size: 10,
+    dx: 5.8,
+    dy: 0,
+  },
+
+  // Semnătură pagina 2
+  semnatura_p2: { x: 120, y: 120, w: 190, h: 45 },
 };

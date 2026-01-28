@@ -15,7 +15,7 @@ function drawTextClamped(page, text, cfg, font) {
     size: cfg.size,
     font,
     color: rgb(0, 0, 0),
-    maxWidth: cfg.maxWidth,     // dacă e setat, pdf-lib va face “wrap”
+    maxWidth: cfg.maxWidth,
     lineHeight: cfg.lineHeight ?? (cfg.size + 2),
   });
 }
@@ -33,75 +33,74 @@ function drawDigitsInBoxes(page, text, cfg, font) {
   }
 }
 
+function drawX(page, cfg, font) {
+  page.drawText("X", {
+    x: cfg.x,
+    y: cfg.y,
+    size: cfg.size ?? 12,
+    font,
+    color: rgb(0, 0, 0),
+  });
+}
+
+async function drawSignature(pdfDoc, page, signaturePngDataUrl, cfg) {
+  if (!signaturePngDataUrl) return;
+  const pngBytes = await fetch(signaturePngDataUrl).then((r) => r.arrayBuffer());
+  const sigImg = await pdfDoc.embedPng(pngBytes);
+  page.drawImage(sigImg, {
+    x: cfg.x,
+    y: cfg.y,
+    width: cfg.w,
+    height: cfg.h,
+  });
+}
+
 export async function generate230Pdf(data, signaturePngDataUrl) {
   const templateUrl = `${import.meta.env.BASE_URL}templates/formular230_2025.pdf`;
   const templateBytes = await fetch(templateUrl).then((r) => r.arrayBuffer());
 
   const pdfDoc = await PDFDocument.load(templateBytes);
-  const page = pdfDoc.getPages()[0];
+  const pages = pdfDoc.getPages();
+  const page1 = pages[0];
+  const page2 = pages[1]; // formularul are 2 pagini
 
-  // Fonturi
   const fontText = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontMono = await pdfDoc.embedFont(StandardFonts.Courier);
 
-  // DEBUG overlay (pune false după calibrare)
-  const DEBUG = false;
-  if (DEBUG) {
-    const rect = (x, y, w, h) =>
-      page.drawRectangle({
-        x, y, width: w, height: h,
-        borderWidth: 0.8,
-        borderColor: rgb(1, 0, 0),
-      });
+  // ===== Pagina 1 =====
+  drawTextClamped(page1, data.nume, COORD.nume, fontText);
+  drawTextClamped(page1, data.prenume, COORD.prenume, fontText);
+  drawTextClamped(page1, data.initialaTata, COORD.initialaTata, fontText);
 
-    // 13 căsuțe CNP (ghidaj)
-    for (let i = 0; i < 13; i++) {
-      rect(COORD.cnpBoxes.x + i * COORD.cnpBoxes.step, COORD.cnpBoxes.y, COORD.cnpBoxes.step, 14);
-    }
+  drawTextClamped(page1, data.email, COORD.email, fontText);
+  drawTextClamped(page1, data.telefon, COORD.telefon, fontText);
 
-    // ghid semnătură
-    rect(COORD.semnatura.x, COORD.semnatura.y, COORD.semnatura.w, COORD.semnatura.h);
+  drawDigitsInBoxes(page1, data.cnp, COORD.cnpBoxes, fontMono);
 
-    // ghid stradă (aprox)
-    rect(COORD.strada.x, COORD.strada.y, COORD.strada.maxWidth ?? 300, 14);
+  drawTextClamped(page1, data.strada, COORD.strada, fontText);
+  drawTextClamped(page1, data.numar, COORD.numar, fontText);
+  drawTextClamped(page1, data.bloc, COORD.bloc, fontText);
+  drawTextClamped(page1, data.scara, COORD.scara, fontText);
+  drawTextClamped(page1, data.etaj, COORD.etaj, fontText);
+  drawTextClamped(page1, data.ap, COORD.ap, fontText);
+
+  drawTextClamped(page1, data.judetSector, COORD.judetSector, fontText);
+  drawTextClamped(page1, data.oras, COORD.oras, fontText);
+  drawTextClamped(page1, data.codPostal, COORD.codPostal, fontText);
+
+  if (Number(data.aniDistribuire) === 2) {
+    drawX(page1, COORD.opt2ani_p1, fontText);
   }
 
-  // I. Date contribuabil
-  drawTextClamped(page, data.nume, COORD.nume, fontText);
-  drawTextClamped(page, data.prenume, COORD.prenume, fontText);
-  drawTextClamped(page, data.initialaTata, COORD.initialaTata, fontText);
+  await drawSignature(pdfDoc, page1, signaturePngDataUrl, COORD.semnatura);
 
-  // Contact
-  drawTextClamped(page, data.email, COORD.email, fontText);
-  drawTextClamped(page, data.telefon, COORD.telefon, fontText);
-
-  // CNP în căsuțe
-  drawDigitsInBoxes(page, data.cnp, COORD.cnpBoxes, fontMono);
-
-  // Adresă
-  drawTextClamped(page, data.strada, COORD.strada, fontText);
-  drawTextClamped(page, data.numar, COORD.numar, fontText);
-  drawTextClamped(page, data.bloc, COORD.bloc, fontText);
-  drawTextClamped(page, data.scara, COORD.scara, fontText);
-  drawTextClamped(page, data.etaj, COORD.etaj, fontText);
-  drawTextClamped(page, data.ap, COORD.ap, fontText);
-
-  drawTextClamped(page, data.judetSector, COORD.judetSector, fontText);
-  drawTextClamped(page, data.oras, COORD.oras, fontText);
-  drawTextClamped(page, data.codPostal, COORD.codPostal, fontText);
-
-  // Semnătură
-  if (signaturePngDataUrl) {
-    const pngBytes = await fetch(signaturePngDataUrl).then((r) => r.arrayBuffer());
-    const sigImg = await pdfDoc.embedPng(pngBytes);
-
-    page.drawImage(sigImg, {
-      x: COORD.semnatura.x,
-      y: COORD.semnatura.y,
-      width: COORD.semnatura.w,
-      height: COORD.semnatura.h,
-    });
+  // ===== Pagina 2 (mereu completăm CNP + semnătură) =====
+  if (Number(data.aniDistribuire) === 2) {
+    drawX(page2, COORD.opt2ani_p2, fontText);
   }
+
+  drawDigitsInBoxes(page2, data.cnp, COORD.cnpBoxes_p2, fontMono);
+  await drawSignature(pdfDoc, page2, signaturePngDataUrl, COORD.semnatura_p2);
 
   const out = await pdfDoc.save();
   return new Blob([out], { type: "application/pdf" });
